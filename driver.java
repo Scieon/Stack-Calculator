@@ -22,67 +22,51 @@ public class driver {
 			System.exit(0);
 		}
 
-		//System.out.println(inputStream.hasNext());
+
+		//If have number than push
 		while(inputStream.hasNext() == true){
 			if(inputStream.hasNextInt()){
 				int x = inputStream.nextInt();
-				//System.out.println("Pushing... " + x);
 				stack1.push(x);
-//				if(stack1.peek() == 7)
-//					System.out.println("Last number");
-			}
+
+			}//End of reading number
 
 			if(inputStream.hasNext()){
 				String symbol = inputStream.next();
-
-
-				if(symbol.length() != 1 || inputStream.hasNext() == false){
-					System.out.println("Not valid symbol or incorrect syntax. Closing program ");
-					System.exit(0);
-				}
 				char y = symbol.charAt(0);
 
-				stack2.push(y);
-				if(prec(y) <= prec(stack2.peek())){ //New symbol has greater precedence so we push it onto stack
-					//stack2.push(y);
+				if(stack2.isEmpty())
+					stack2.push(y);
+
+				if(prec(y) < prec(stack2.peek())){ //New symbol has greater precedence so we push it onto stack
+					stack2.push(y);
 				}
 
-				else{ //Not greater than, therfore we execute what is on stack
-					if(stack1.size()>=2){
-						int a = stack1.pop();
+				else{
+					while(stack1.size() >=2 && stack2.size()>=1 && prec(stack2.peek()) <= prec(y)){
 						int b = stack1.pop();
-						int res =stack1.push(op(stack2.pop(),a,b)); 
-						System.out.println("Result: " + res);
-						
+						int a = stack1.pop();
+						stack1.push(op(stack2.pop(),a,b));
+					}
+					if(stack2.isEmpty() ||  prec(stack2.peek())> prec(y)){
+						stack2.push(y);
 					}
 				}
+
 			}
 
 		} //End of stack loop
 
+		int res = 0;
 		while(stack2.isEmpty()==false){
-			int a = stack1.pop();
 			int b = stack1.pop();
-			int res =stack1.push(op(stack2.pop(),a,b)); 
+			int a = stack1.pop();
+			res =stack1.push(op(stack2.pop(),a,b)); 
 		}
-		
-		System.out.println("Final result: " + stack1.pop());
-		//
-		//		stack1.push(15);
-		//		stack1.push(3);
-		//		stack2.push('/');
-		//		int last = stack1.pop();
-		//		int first = stack1.pop();
-		//		System.out.println(op(stack2.pop(),first,last));
 
-		//				while(stack1.isEmpty() == false){
-		//					System.out.println(stack1.pop());
-		//				}
-		//				
-		//				while(stack2.isEmpty() == false){
-		//					System.out.println(stack2.pop());
-		//				}
-
+		System.out.println(res);
+//		int x  = 14+2*3/3;
+//		System.out.println(x);
 
 	} // End of main
 
