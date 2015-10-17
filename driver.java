@@ -40,9 +40,25 @@ public class driver {
 
 				if(prec(y) < prec(stack2.peek())){ //New symbol has greater precedence so we push it onto stack
 					stack2.push(y);
+					continue;
 				}
 
-				else{
+				if(stack2.peek() == '!'){
+					stack1.push(recFact(stack1.pop()));
+					stack2.pop();
+					if(inputStream.hasNext()){
+						y = inputStream.next().charAt(0);
+						stack2.push(y);
+						//System.out.println(stack1.peek());
+
+					}
+				//	System.out.println(stack1.peek()); //See the fact
+					continue;
+				}
+
+
+
+				else if(prec(y) >= prec(stack2.peek())){
 					while(stack1.size() >=2 && stack2.size()>=1 && prec(stack2.peek()) <= prec(y)){
 						int b = stack1.pop();
 						int a = stack1.pop();
@@ -57,16 +73,24 @@ public class driver {
 
 		} //End of stack loop
 
-		int res = 0;
+		int res = stack1.peek();
 		while(stack2.isEmpty()==false){
+
+			while(stack2.peek() == '!'){
+				stack1.push(recFact(stack1.pop()));
+				stack2.pop();
+			}
+			
+			
 			int b = stack1.pop();
 			int a = stack1.pop();
-			res =stack1.push(op(stack2.pop(),a,b)); 
+			System.out.println("a: " + a + " b: " + b + " op: " + stack2.peek());
+			res = stack1.push(op(stack2.pop(),a,b)); 
 		}
 
 		System.out.println(res);
-//		int x  = 14+2*3/3;
-//		System.out.println(x);
+		//		int x  = 14+2*3/3;
+		//		System.out.println(x);
 
 	} // End of main
 
@@ -95,13 +119,23 @@ public class driver {
 
 		if (n == ' ')
 			return 9;
+
+
 		if(n == '+' || n == '-' ){
 			return 6;
 		}
 		if(n == '*' || n == '/')
 			return 5;
 
+		if(n == '!')
+			return 2;
 
 		return -1;
+	}
+
+	public static int recFact(int n){
+		if(n<1)
+			return 1;
+		return n*recFact(n-1);
 	}
 }
