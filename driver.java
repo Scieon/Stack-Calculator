@@ -8,6 +8,7 @@ public class driver {
 
 	public static void main(String[] args) {
 		char [] arr = {'-','+','*','/'};
+		boolean neg = false;
 
 		Stack <Integer> stack1 = new Stack <Integer>();
 		Stack <Character> stack2 = new Stack<Character>();
@@ -28,34 +29,31 @@ public class driver {
 			if(inputStream.hasNextInt()){
 				int x = inputStream.nextInt();
 				stack1.push(x);
-
+			
 			}//End of reading number
 
 			if(inputStream.hasNext()){
 				String symbol = inputStream.next();
 				char y = symbol.charAt(0);
+				
+				if(y == '!'){
+					int z = stack1.pop(); //Current integer to be factored
+					if(z< 0){
+						z = -z;
+					stack1.push(-recFact(z));
+					}
+					
+					else 
+						stack1.push(recFact(z));
+					continue;
+				}
 
 				if(stack2.isEmpty())
 					stack2.push(y);
 
 				if(prec(y) < prec(stack2.peek())){ //New symbol has greater precedence so we push it onto stack
 					stack2.push(y);
-					continue;
 				}
-
-				if(stack2.peek() == '!'){
-					stack1.push(recFact(stack1.pop()));
-					stack2.pop();
-					if(inputStream.hasNext()){
-						y = inputStream.next().charAt(0);
-						stack2.push(y);
-						//System.out.println(stack1.peek());
-
-					}
-				//	System.out.println(stack1.peek()); //See the fact
-					continue;
-				}
-
 
 
 				else if(prec(y) >= prec(stack2.peek())){
@@ -68,23 +66,21 @@ public class driver {
 						stack2.push(y);
 					}
 				}
-
+				
 			}
 
 		} //End of stack loop
 
 		int res = stack1.peek();
 		while(stack2.isEmpty()==false){
-
+			
 			while(stack2.peek() == '!'){
 				stack1.push(recFact(stack1.pop()));
 				stack2.pop();
 			}
-			
-			
 			int b = stack1.pop();
 			int a = stack1.pop();
-			System.out.println("a: " + a + " b: " + b + " op: " + stack2.peek());
+			
 			res = stack1.push(op(stack2.pop(),a,b)); 
 		}
 
@@ -137,5 +133,23 @@ public class driver {
 		if(n<1)
 			return 1;
 		return n*recFact(n-1);
+	}
+	
+	//Runtime of logn
+	public static int pow(int x, int n){
+		int y;
+		if(n==0)
+			return 1;
+		
+		else if(n%2==1){
+			y = pow(x,(n-1)/2);
+			return x*y*y;
+		}
+		
+		else{
+			y = pow(x,n/2);
+			return y*y;
+		}
+			
 	}
 }
