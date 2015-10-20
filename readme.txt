@@ -1,1 +1,1 @@
-Hi
+Stack calculator performs arithmetic expressions.
